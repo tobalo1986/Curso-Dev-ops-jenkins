@@ -1,42 +1,30 @@
-pipeline {
-    agent //El bloque donde se especifica donde ejecutará el pipeline
-        [ Ejemplo
-            agent any
-            agent label
-            agent docker
-        ]
+pipeline 
+{
+    agent any 
 
-    environment {
-        MI_VARIABLE_DE_ENTORNO = 'Valor de mi variable de entorno'
-        NODE_ENV = 'production'
+    tools 
+    {
+        nodejs "nodejs-18"
     }
 
-    stages // Aquí se agrupan los diferentes pasos que se deben seguir en el pipeline
-        stage //Representa un pasos dentro del pipeline
-            steps // Representa los steps que deben ser ejecutados en cada Stage
-        [ Ejemplo
-            stages {
-                stage('test'){
-                    steps {
-                        echo 'Testeando aplicación...'
-                        sh 'npm run test'
-                    }
-                }
-            }
-        ]
+    triggers
+    {
+        githubPush()
+    }
     
-    post //Indica que hacer en la finalización de la ejecución
-        [ Ejemplo  
-            post {
-                success: {
-                    echo 'Mensaje de aviso'
-                }
-                failure {
-                    ...
-                }
-                always { 
-
-                }
-            } 
-        ]
+    stages 
+    {
+        stage('Install dependencies'){
+            steps {
+                echo 'Installing...'
+                sh 'npm install'
+            }
+        }
+        stage('Run test'){
+            steps{
+                echo 'Running test'
+                sh 'npm run test'
+            }
+        }
+    }
 }
